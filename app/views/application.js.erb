@@ -1,0 +1,25 @@
+function socketToObservable(socket) {
+  return Rx.Observable.create(function(observer) {
+    var subscribed = true;
+
+    socket.onmessage = function(message) {
+      if (subscribed) {
+        observer.onNext(message.data);
+      }
+    }
+
+    return function() {
+      subscribed = false;
+      socket.close();
+    }
+  });
+}
+
+var scheme       = '<%= @scheme %>',
+    uri          = scheme + document.location.host + "/",
+    ws           = new WebSocket(uri),
+    socketStream = socketToObservable(ws);
+
+socketStream
+  .map(function(n) { return n * n ; })
+  .forEach(function(n) { console.log(n); });
