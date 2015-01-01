@@ -18,8 +18,11 @@ function socketToObservable(socket) {
 var scheme       = '<%= @scheme %>',
     uri          = scheme + document.location.host + "/",
     ws           = new WebSocket(uri),
-    socketStream = socketToObservable(ws);
+    socketStream = socketToObservable(ws),
+    display      = $("#the_num");
 
 socketStream
   .map(function(n) { return n * n ; })
-  .forEach(function(n) { console.log(n); });
+  .forEach(function(n) {
+    display.html(n);
+  });
